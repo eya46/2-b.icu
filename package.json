@@ -1,0 +1,23 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "element-plus": "^2.7.6",
+    "nuxt": "^3.12.3",
+    "qrcode": "^1.5.3",
+    "uuid": "^10.0.0",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@element-plus/nuxt": "^1.0.9",
+    "@types/uuid": "^10.0.0"
+  }
+}
