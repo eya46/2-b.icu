@@ -26,15 +26,33 @@ const uuidsStr = computed(() => uuids.value.join("\n") + "\n");
 </script>
 
 <template>
-  <div>
-    <el-input-number @change="refreshByNum" v-model="num" :min="1" />
-    <el-button @click="refresh">
-      刷新
-    </el-button>
-    <el-input readonly resize="none" :rows="num+1" :model-value="uuidsStr" type="textarea" />
+  <div class="uuid-page">
+    <div class="uuid-actions">
+      <el-input-number v-model="num" :min="1" @change="refreshByNum" />
+      <el-button @click="refresh">刷新</el-button>
+    </div>
+
+    <el-input
+      class="uuid-result"
+      readonly
+      resize="none"
+      :rows="num + 1"
+      :model-value="uuidsStr"
+      type="textarea"
+    />
   </div>
 </template>
 
 <style scoped>
+.uuid-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.uuid-result {
+  margin-top: 12px;
+}
 
 </style>
