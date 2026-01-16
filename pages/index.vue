@@ -24,6 +24,7 @@ const items = [
   { path: "/base64", title: "Base64", desc: "文本 Base64 编码 / 解码" },
   { path: "/imgbase64", title: "图片Base64", desc: "图片与 Base64 互转（支持 data:* 前缀）" },
   { path: "/qrcode", title: "QRCode", desc: "生成二维码并自定义参数" },
+  { path: "/mail-parser", title: "邮件解析", desc: "解析 .eml/MIME 邮件内容" },
 ] as const;
 </script>
 
