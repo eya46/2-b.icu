@@ -1,75 +1,35 @@
-# Nuxt 3 Minimal Starter
+# 2-b.icu
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+一个简洁实用的在线工具集网站，基于 Nuxt 4 + Element Plus 构建。
 
-## Setup
+## 功能
 
-Make sure to install the dependencies:
+- **UUID 生成器** - 快速生成 UUID
+- **Base64 编解码** - 文本的 Base64 编码与解码
+- **图片 Base64** - 图片与 Base64 互转
+- **QRCode 生成** - 二维码生成工具
+- **邮件解析** - 解析 EML 邮件文件内容
+
+## 技术栈
+
+- [Nuxt 4](https://nuxt.com/)
+- [Vue 3](https://vuejs.org/)
+- [Element Plus](https://element-plus.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+
+## 开发
 
 ```bash
-# npm
-npm install
-
-# pnpm
+# 安装依赖
 pnpm install
 
-# yarn
-yarn install
+# 启动开发服务器
+pnpm dev
 
-# bun
-bun install
+# 构建生产版本
+pnpm build
 ```
 
-## Development Server
+## License
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+MIT
