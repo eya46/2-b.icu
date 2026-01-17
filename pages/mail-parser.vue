@@ -10,6 +10,7 @@ const parseError = ref("");
 const isParsing = ref(false);
 const shouldUnescape = ref(true);
 const lastNormalizedRaw = ref("");
+const showDebugInfo = ref(false);
 
 const extraHeaderKeys = [
   { key: "X-Priority", label: "优先级" },
@@ -204,13 +205,105 @@ const handleFileChange = async (file: UploadFile) => {
   try {
     rawEmail.value = await file.raw.text();
     ElMessage({
-      message: "已读取邮件文件，点击解析即可",
+      message: "已读取邮件文件，正在解析...",
       type: "success",
     });
+    // 自动解析
+    await parseRawEmail();
   } catch (error) {
     const message = error instanceof Error ? error.message : "读取文件失败";
     ElMessage({
       message,
+      type: "error",
+    });
+  }
+};
+
+const formatFileSize = (attachment: any) => {
+  // 尝试不同的大小字段名
+  let bytes = attachment.size || attachment.length || attachment.contentLength;
+
+  // 如果没有直接的大小信息，尝试从content计算
+  if (!bytes && attachment.content) {
+    if (attachment.content instanceof Uint8Array) {
+      bytes = attachment.content.length;
+    } else if (attachment.content instanceof ArrayBuffer) {
+      bytes = attachment.content.byteLength;
+    } else if (typeof attachment.content === 'string') {
+      // 如果是base64，估算原始大小（base64比原始数据大约33%）
+      bytes = Math.floor(attachment.content.length * 0.75);
+    }
+  }
+
+  if (!bytes || bytes === 0) return "-";
+
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+};
+
+const downloadAttachment = (attachment: any) => {
+  try {
+    if (!attachment.content) {
+      ElMessage({
+        message: "附件内容为空",
+        type: "warning",
+      });
+      return;
+    }
+
+    // 将不同格式转换为Blob
+    let blob: Blob;
+
+    // 检查是否是Uint8Array（最常见的情况）
+    if (attachment.content instanceof Uint8Array) {
+      blob = new Blob([attachment.content], { type: attachment.mimeType || 'application/octet-stream' });
+    }
+    // 检查是否是ArrayBuffer
+    else if (attachment.content instanceof ArrayBuffer) {
+      blob = new Blob([attachment.content], { type: attachment.mimeType || 'application/octet-stream' });
+    }
+    // 检查是否是base64字符串
+    else if (typeof attachment.content === 'string') {
+      try {
+        const binaryString = atob(attachment.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        blob = new Blob([bytes], { type: attachment.mimeType || 'application/octet-stream' });
+      } catch (decodeError) {
+        // 如果不是base64，尝试直接作为文本内容
+        blob = new Blob([attachment.content], { type: attachment.mimeType || 'text/plain' });
+      }
+    }
+    // 检查是否有其他格式
+    else {
+      ElMessage({
+        message: `不支持的附件格式: ${typeof attachment.content}。请查看调试信息了解详情。`,
+        type: "error",
+      });
+      return;
+    }
+
+    // 创建下载链接
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = attachment.filename || 'attachment';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    ElMessage({
+      message: `下载 ${attachment.filename} 成功`,
+      type: "success",
+    });
+  } catch (error) {
+    console.error('下载失败:', error);
+    ElMessage({
+      message: "下载失败，请查看调试信息了解详情",
       type: "error",
     });
   }
@@ -285,12 +378,55 @@ const handleFileChange = async (file: UploadFile) => {
         <el-tab-pane label="HTML 源码">
           <el-input :rows="8" type="textarea" :model-value="parsed.html || ''" />
         </el-tab-pane>
+        <el-tab-pane label="HTML 预览">
+          <div class="html-preview-container">
+            <div v-if="parsed.html" class="html-preview" v-html="parsed.html"></div>
+            <div v-else class="mail-empty">
+              无HTML内容
+            </div>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="附件">
+          <div v-if="parsed.attachments?.length" style="margin-bottom: 16px;">
+            <el-button
+              size="small"
+              type="info"
+              @click="showDebugInfo = !showDebugInfo"
+            >
+              {{ showDebugInfo ? '隐藏' : '显示' }}调试信息
+            </el-button>
+          </div>
+
           <el-table :data="parsed.attachments || []" style="width: 100%">
-            <el-table-column prop="filename" label="文件名" />
+            <el-table-column prop="filename" label="文件名" min-width="200" />
             <el-table-column prop="mimeType" label="类型" width="180" />
-            <el-table-column prop="size" label="大小 (bytes)" width="140" />
+            <el-table-column label="大小" width="120">
+              <template #default="{ row }">
+                {{ formatFileSize(row) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="100" align="center">
+              <template #default="{ row }">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="downloadAttachment(row)"
+                  :disabled="!row.content"
+                >
+                  下载
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
+
+          <div v-if="showDebugInfo && parsed.attachments?.length" class="debug-info">
+            <h4>附件调试信息：</h4>
+            <pre v-for="(attachment, index) in parsed.attachments" :key="index" class="debug-attachment">
+附件 {{ index + 1 }}:
+{{ JSON.stringify(attachment, null, 2) }}
+            </pre>
+          </div>
+
           <div v-if="!parsed.attachments?.length" class="mail-empty">
             无附件
           </div>
@@ -303,6 +439,7 @@ const handleFileChange = async (file: UploadFile) => {
 <style scoped>
 .mail-parser {
   width: 100%;
+  padding-bottom: 32px;
 }
 
 .mail-card {
@@ -348,5 +485,68 @@ const handleFileChange = async (file: UploadFile) => {
 .mail-empty {
   margin-top: 12px;
   color: var(--el-text-color-secondary);
+}
+
+.debug-info {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--el-fill-color-light);
+  border-radius: 6px;
+}
+
+.debug-info h4 {
+  margin: 0 0 12px 0;
+  color: var(--el-text-color-primary);
+}
+
+.debug-attachment {
+  margin: 8px 0;
+  padding: 8px;
+  background: var(--el-bg-color);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.html-preview-container {
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 6px;
+  min-height: 200px;
+}
+
+.html-preview {
+  padding: 16px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: auto;
+  max-height: 500px;
+  word-wrap: break-word;
+}
+
+.html-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+.html-preview table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.html-preview table,
+.html-preview th,
+.html-preview td {
+  border: 1px solid #ddd;
+}
+
+.html-preview th,
+.html-preview td {
+  padding: 8px;
+  text-align: left;
 }
 </style>
