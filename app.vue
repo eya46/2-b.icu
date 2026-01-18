@@ -7,6 +7,7 @@ const navItems = [
   { path: "/base64", label: "Base64" },
   { path: "/imgbase64", label: "图片Base64" },
   { path: "/qrcode", label: "QRCode" },
+  { path: "/jwt", label: "JWT" },
   { path: "/mail-parser", label: "邮件解析" },
 ] as const;
 </script>
