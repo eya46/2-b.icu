@@ -26,6 +26,7 @@ const items = [
   { path: "/qrcode", title: "QRCode", desc: "生成二维码并自定义参数" },
   { path: "/jwt", title: "JWT", desc: "解析 / 生成 JWT Token" },
   { path: "/mail-parser", title: "邮件解析", desc: "解析 .eml/MIME 邮件内容" },
+  { path: "/word-counter", title: "字数统计", desc: "统计文本字符、单词、行数等" },
 ] as const;
 </script>
 

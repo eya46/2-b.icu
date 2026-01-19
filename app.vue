@@ -9,6 +9,7 @@ const navItems = [
   { path: "/qrcode", label: "QRCode" },
   { path: "/jwt", label: "JWT" },
   { path: "/mail-parser", label: "邮件解析" },
+  { path: "/word-counter", label: "字数统计" },
 ] as const;
 </script>
 

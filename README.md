@@ -10,6 +10,7 @@
 - **QRCode 生成** - 二维码生成工具
 - **JWT 解析** - 解析 JWT Token 内容（Header、Payload、Signature）
 - **邮件解析** - 解析 EML 邮件文件内容
+- **字数统计** - 统计文本字符、单词、行数等
 
 ## 技术栈
 
