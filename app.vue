@@ -55,7 +55,7 @@ const navItems = [
 .app-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   padding: 0 16px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   position: sticky;
@@ -98,6 +98,8 @@ const navItems = [
   text-decoration: none;
   border-radius: 6px;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .github-link:hover {

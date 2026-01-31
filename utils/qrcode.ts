@@ -81,6 +81,10 @@ export default defineComponent({
       validator: (maskPattern: QRCodeMaskPattern) =>
         MASK_PATTERNS.includes(maskPattern),
     },
+    mode: {
+      type: String as PropType<"auto" | "numeric" | "alphanumeric" | "byte" | "kanji">,
+      default: "auto",
+    },
     toSJISFunc: Function as PropType<QRCodeToSJISFunc>,
     margin: Number,
     scale: Number,
@@ -95,7 +99,7 @@ export default defineComponent({
     },
     type: {
       type: String as PropType<QRCodeProps["type"]>,
-      validator: (type: QRCodeProps["type"]) => TYPES.includes(type!),
+      validator: (type: string) => TYPES.includes(type as (typeof TYPES)[number]),
       required: true,
     },
     quality: {
@@ -126,10 +130,19 @@ export default defineComponent({
   setup(props, { attrs, emit }) {
     const dataUrlRef = ref<string>();
 
+    const getValueWithMode = (): QRCodeValue | string => {
+      const { value, mode } = props;
+      if (mode === "auto" || typeof value !== "string") {
+        return value;
+      }
+      return [{ data: value, mode }];
+    };
+
     const toDataURL = () => {
-      const { quality, value, ...rest } = props;
+      const { quality, mode: _mode, value, ...rest } = props;
+      const finalValue = getValueWithMode();
       QRCode.toDataURL(
-        value,
+        finalValue,
         Object.assign(rest, quality == null || { renderOptions: { quality } }),
       )
         .then((dataUrl: string) => {
@@ -139,7 +152,7 @@ export default defineComponent({
         .catch((err: unknown) => emit("error", err));
     };
 
-    watch(props, toDataURL, { immediate: true });
+    watch(props, toDataURL, { immediate: true, deep: true });
 
     return () =>
       h("img", {
