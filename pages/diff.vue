@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { bundledLanguages } from 'shiki'
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import { ArrowUp, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 interface DiffLine {
   type: 'same' | 'add' | 'delete' | 'modify'
@@ -61,6 +61,13 @@ function scrollToCurrentDiff() {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   })
+}
+
+function scrollToTop() {
+  const resultContainer = document.querySelector('.diff-result')
+  if (resultContainer) {
+    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 }
 
 // 获取所有可用语言并排序
@@ -337,6 +344,11 @@ onMounted(() => {
         </span>
         <div class="navigator-buttons">
           <el-button
+            @click="scrollToTop"
+            size="small"
+            :icon="ArrowUp"
+          />
+          <el-button
             :disabled="currentDiffIndex <= 0"
             @click="goToPrevDiff"
             size="small"
@@ -444,7 +456,7 @@ onMounted(() => {
 }
 
 .diff-col-title:nth-child(1) {
-  min-width: 48px;
+  min-width: 32px;
 }
 
 .diff-row {
@@ -464,7 +476,7 @@ onMounted(() => {
 
 .line-num {
   flex-shrink: 0;
-  min-width: 48px;
+  min-width: 32px;
   color: var(--el-text-color-regular);
   font-size: 12px;
   user-select: none;
@@ -485,6 +497,8 @@ onMounted(() => {
   padding: 0;
   background: transparent;
   display: inline;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .line-content :deep(code) {
@@ -492,6 +506,16 @@ onMounted(() => {
   font-size: inherit;
   background: transparent;
   padding: 0;
+  display: inline;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 移除 Shiki 生成的 span 的样式影响 */
+.line-content :deep(span) {
+  display: inline;
+  white-space: inherit;
 }
 
 /* 差异类型样式 */
