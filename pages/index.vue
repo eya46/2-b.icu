@@ -28,6 +28,7 @@ const items = [
   { path: "/mail-parser", title: "邮件解析", desc: "解析 .eml/MIME 邮件内容" },
   { path: "/word-counter", title: "字数统计", desc: "统计文本字符、单词、行数等" },
   { path: "/color", title: "颜色工具", desc: "取色器与颜色格式转换" },
+  { path: "/diff", title: "Diff", desc: "文本差异对比工具" },
 ] as const;
 </script>
 

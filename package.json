@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "element-plus": "^2.13.1",
     "nuxt": "^4.2.2",
     "postal-mime": "^2.3.2",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.9",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "shiki": "^3.22.0"
   }
 }

@@ -11,6 +11,7 @@ const navItems = [
   { path: "/mail-parser", label: "邮件解析" },
   { path: "/word-counter", label: "字数统计" },
   { path: "/color", label: "颜色工具" },
+  { path: "/diff", label: "Diff" },
 ] as const;
 </script>
 
