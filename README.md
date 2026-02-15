@@ -7,6 +7,7 @@
 - **UUID 生成器** - 快速生成 UUID
 - **Base64 编解码** - 文本的 Base64 编码与解码
 - **图片 Base64** - 图片与 Base64 互转
+- **URL 编解码** - URL 编码与解码
 - **QRCode 生成** - 二维码生成工具
 - **JWT 解析** - 解析 JWT Token 内容（Header、Payload、Signature）
 - **邮件解析** - 解析 EML 邮件文件内容
