@@ -8,32 +8,51 @@ const encodeUrl = () => {
   try {
     const input = rawData.value;
     
-    // Try to parse as URL
-    try {
-      const url = new URL(input);
-      // It's a valid URL, encode each component separately
-      const encodedPathname = url.pathname
-        .split('/')
-        .map(segment => encodeURIComponent(segment))
-        .join('/');
-      const encodedSearch = url.search
-        ? '?' + url.search.substring(1).split('&').map(param => {
-            const idx = param.indexOf('=');
-            if (idx === -1) {
-              return encodeURIComponent(param);
-            }
-            const key = param.substring(0, idx);
-            const value = param.substring(idx + 1);
-            return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-          }).join('&')
-        : '';
-      const encodedHash = url.hash
-        ? '#' + encodeURIComponent(url.hash.substring(1))
-        : '';
+    // Check if input looks like a URL (starts with http:// or https://)
+    const urlMatch = input.match(/^(https?:\/\/[^/]+)(\/.*)?$/);
+    
+    if (urlMatch) {
+      // It's a URL, only encode the path part
+      const baseUrl = urlMatch[1]; // protocol + domain
+      const pathPart = urlMatch[2] || ''; // everything after domain
       
-      encodedData.value = `${url.protocol}//${url.host}${encodedPathname}${encodedSearch}${encodedHash}`;
-    } catch (e) {
-      // Not a valid URL, encode everything
+      if (pathPart) {
+        // Split by / and encode each segment
+        const segments = pathPart.split('/');
+        const encodedPath = segments.map((segment, idx) => {
+          if (idx === 0) return ''; // First element is empty before leading /
+          
+          // Handle query string
+          if (segment.includes('?')) {
+            const [path, query] = segment.split('?');
+            const encodedPathSeg = encodeURIComponent(path);
+            const encodedQuery = query.split('&').map(param => {
+              const eqIdx = param.indexOf('=');
+              if (eqIdx === -1) {
+                return encodeURIComponent(param);
+              }
+              const key = param.substring(0, eqIdx);
+              const value = param.substring(eqIdx + 1);
+              return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+            }).join('&');
+            return `${encodedPathSeg}?${encodedQuery}`;
+          }
+          
+          // Handle fragment
+          if (segment.includes('#')) {
+            const [path, hash] = segment.split('#');
+            return `${encodeURIComponent(path)}#${encodeURIComponent(hash)}`;
+          }
+          
+          return encodeURIComponent(segment);
+        }).join('/');
+        
+        encodedData.value = baseUrl + encodedPath;
+      } else {
+        encodedData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, encode everything
       encodedData.value = encodeURIComponent(input);
     }
     
@@ -53,32 +72,51 @@ const decodeUrl = () => {
   try {
     const input = encodedData.value;
     
-    // Try to parse as URL
-    try {
-      const url = new URL(input);
-      // It's a valid URL, decode each component separately
-      const decodedPathname = url.pathname
-        .split('/')
-        .map(segment => decodeURIComponent(segment))
-        .join('/');
-      const decodedSearch = url.search
-        ? '?' + url.search.substring(1).split('&').map(param => {
-            const idx = param.indexOf('=');
-            if (idx === -1) {
-              return decodeURIComponent(param);
-            }
-            const key = param.substring(0, idx);
-            const value = param.substring(idx + 1);
-            return `${decodeURIComponent(key)}=${decodeURIComponent(value)}`;
-          }).join('&')
-        : '';
-      const decodedHash = url.hash
-        ? '#' + decodeURIComponent(url.hash.substring(1))
-        : '';
+    // Check if input looks like a URL (starts with http:// or https://)
+    const urlMatch = input.match(/^(https?:\/\/[^/]+)(\/.*)?$/);
+    
+    if (urlMatch) {
+      // It's a URL, only decode the path part
+      const baseUrl = urlMatch[1]; // protocol + domain
+      const pathPart = urlMatch[2] || ''; // everything after domain
       
-      rawData.value = `${url.protocol}//${url.host}${decodedPathname}${decodedSearch}${decodedHash}`;
-    } catch (e) {
-      // Not a valid URL, decode everything
+      if (pathPart) {
+        // Split by / and decode each segment
+        const segments = pathPart.split('/');
+        const decodedPath = segments.map((segment, idx) => {
+          if (idx === 0) return ''; // First element is empty before leading /
+          
+          // Handle query string
+          if (segment.includes('?')) {
+            const [path, query] = segment.split('?');
+            const decodedPathSeg = decodeURIComponent(path);
+            const decodedQuery = query.split('&').map(param => {
+              const eqIdx = param.indexOf('=');
+              if (eqIdx === -1) {
+                return decodeURIComponent(param);
+              }
+              const key = param.substring(0, eqIdx);
+              const value = param.substring(eqIdx + 1);
+              return `${decodeURIComponent(key)}=${decodeURIComponent(value)}`;
+            }).join('&');
+            return `${decodedPathSeg}?${decodedQuery}`;
+          }
+          
+          // Handle fragment
+          if (segment.includes('#')) {
+            const [path, hash] = segment.split('#');
+            return `${decodeURIComponent(path)}#${decodeURIComponent(hash)}`;
+          }
+          
+          return decodeURIComponent(segment);
+        }).join('/');
+        
+        rawData.value = baseUrl + decodedPath;
+      } else {
+        rawData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, decode everything
       rawData.value = decodeURIComponent(input);
     }
     
