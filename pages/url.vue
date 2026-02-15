@@ -6,7 +6,48 @@ const encodedData = ref("");
 
 const encodeUrl = () => {
   try {
-    encodedData.value = encodeURIComponent(rawData.value);
+    const input = rawData.value;
+    // Check if input is a URL (starts with http:// or https://)
+    const urlRegex = /^(https?:\/\/[^\/]+)(\/.*)?$/;
+    const match = input.match(urlRegex);
+    
+    if (match) {
+      // It's a URL, only encode the path part
+      const baseUrl = match[1]; // protocol + domain
+      const path = match[2] || ""; // path (including query and fragment)
+      
+      // Encode each segment of the path while preserving the structure
+      if (path) {
+        const encodedPath = path.split('/').map(segment => {
+          // Don't encode query string separators and fragment identifiers
+          if (segment.includes('?') || segment.includes('#')) {
+            // Split by ? and # and encode each part separately
+            return segment.split(/([?#])/).map((part, idx) => {
+              // Keep ? and # as is
+              if (part === '?' || part === '#') return part;
+              // For query strings, encode keys and values but keep = and &
+              if (idx > 0 && segment.includes('?')) {
+                return part.split('&').map(param => {
+                  const [key, value] = param.split('=');
+                  return value !== undefined 
+                    ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+                    : encodeURIComponent(key);
+                }).join('&');
+              }
+              return encodeURIComponent(part);
+            }).join('');
+          }
+          return encodeURIComponent(segment);
+        }).join('/');
+        encodedData.value = baseUrl + encodedPath;
+      } else {
+        encodedData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, encode everything
+      encodedData.value = encodeURIComponent(input);
+    }
+    
     ElMessage({
       message: "编码成功",
       type: "success",
@@ -21,7 +62,26 @@ const encodeUrl = () => {
 
 const decodeUrl = () => {
   try {
-    rawData.value = decodeURIComponent(encodedData.value);
+    const input = encodedData.value;
+    // Check if input is a URL (starts with http:// or https://)
+    const urlRegex = /^(https?:\/\/[^\/]+)(\/.*)?$/;
+    const match = input.match(urlRegex);
+    
+    if (match) {
+      // It's a URL, only decode the path part
+      const baseUrl = match[1]; // protocol + domain
+      const path = match[2] || ""; // path (including query and fragment)
+      
+      if (path) {
+        rawData.value = baseUrl + decodeURIComponent(path);
+      } else {
+        rawData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, decode everything
+      rawData.value = decodeURIComponent(input);
+    }
+    
     ElMessage({
       message: "解码成功",
       type: "success",
