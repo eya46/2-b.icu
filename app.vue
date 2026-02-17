@@ -9,6 +9,7 @@ const navItems = [
   { path: "/url", label: "URL编解码" },
   { path: "/qrcode", label: "QRCode" },
   { path: "/jwt", label: "JWT" },
+  { path: "/bcrypt", label: "Bcrypt" },
   { path: "/mail-parser", label: "邮件解析" },
   { path: "/word-counter", label: "字数统计" },
   { path: "/color", label: "颜色工具" },
