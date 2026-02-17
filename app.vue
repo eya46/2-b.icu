@@ -50,7 +50,6 @@ const navItems = [
 <style>
 html,
 body {
-  overflow: hidden;
   margin: 0;
   padding: 0;
 }
@@ -58,12 +57,11 @@ body {
 
 <style scoped>
 #app {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .app-shell {
-  height: 100vh;
+  min-height: 100vh;
   background: var(--el-bg-color);
 }
 
@@ -71,18 +69,19 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 16px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--el-border-color-lighter);
-  height: 60px;
+  height: 56px;
   flex-shrink: 0;
   background: var(--el-bg-color);
 }
 
 .app-main {
-  padding: 16px;
+  padding: 12px;
+  padding-bottom: 40px; /* Add extra padding to bottom for mobile */
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 56px);
 }
 
 .app-main::-webkit-scrollbar {
@@ -108,6 +107,7 @@ body {
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.2px;
+  font-size: 16px;
 }
 
 .app-nav {
@@ -121,24 +121,41 @@ body {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
+  padding-bottom: 32px; /* Extra padding at bottom */
 }
 
 .github-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: var(--el-text-color-primary);
-  text-decoration: none;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  white-space: nowrap;
+  display: none; /* Hide GitHub link on mobile for space */
 }
 
-.github-link:hover {
-  background-color: var(--el-color-primary-light-9);
-  color: var(--el-color-primary);
+/* Show GitHub link on larger screens */
+@media (min-width: 768px) {
+  .github-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    color: var(--el-text-color-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .github-link:hover {
+    background-color: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+  }
+
+  .app-header {
+    padding: 0 16px;
+  }
+
+  .app-main {
+    padding: 16px;
+    padding-bottom: 48px;
+  }
 }
 
 .github-icon {
