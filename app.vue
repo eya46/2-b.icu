@@ -18,8 +18,8 @@ const navItems = [
 </script>
 
 <template>
-  <div id="app" class="app-shell">
-    <header class="app-header">
+  <el-container id="app" class="app-shell">
+    <el-header class="app-header">
       <NuxtLink to="/" class="app-brand">
         2-b.icu
       </NuxtLink>
@@ -40,15 +40,15 @@ const navItems = [
         <GitHubIcon />
         <span>2-b.icu</span>
       </a>
-    </header>
+    </el-header>
 
-    <main class="app-main">
+    <el-main class="app-main">
       <div class="app-content">
         <NuxtRouteAnnouncer />
         <NuxtPage />
       </div>
-    </main>
-  </div>
+    </el-main>
+  </el-container>
 </template>
 
 <style>
