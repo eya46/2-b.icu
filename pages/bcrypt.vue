@@ -7,22 +7,35 @@ const saltRounds = ref(10);
 // Hash
 const plainText = ref("");
 const hashResult = ref("");
+const hashLoading = ref(false);
 
 // Verify
 const verifyText = ref("");
 const verifyHash = ref("");
 const verifyResult = ref<"valid" | "invalid" | "">("");
+const verifyLoading = ref(false);
 
-const hashPassword = () => {
+const hashPassword = async () => {
   if (!plainText.value) {
     ElMessage.warning("请输入要哈希的文本");
     return;
   }
+
+  hashResult.value = "";
+  hashLoading.value = true;
+
   try {
-    hashResult.value = bcrypt.hashSync(plainText.value, saltRounds.value);
+    hashResult.value = await new Promise((resolve, reject) => {
+      bcrypt.hash(plainText.value, saltRounds.value, (err, hash) => {
+        if (err) reject(err);
+        else resolve(hash);
+      });
+    });
     ElMessage.success("哈希生成成功");
   } catch {
     ElMessage.error("哈希生成失败");
+  } finally {
+    hashLoading.value = false;
   }
 };
 
@@ -32,7 +45,7 @@ const clearHash = () => {
   hashResult.value = "";
 };
 
-const verifyPassword = () => {
+const verifyPassword = async () => {
   if (!verifyText.value) {
     ElMessage.warning("请输入要验证的文本");
     return;
@@ -41,8 +54,17 @@ const verifyPassword = () => {
     ElMessage.warning("请输入要验证的哈希");
     return;
   }
+
+  verifyResult.value = "";
+  verifyLoading.value = true;
+
   try {
-    const valid = bcrypt.compareSync(verifyText.value, verifyHash.value);
+    const valid = await new Promise((resolve, reject) => {
+      bcrypt.compare(verifyText.value, verifyHash.value, (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
     verifyResult.value = valid ? "valid" : "invalid";
     if (valid) {
       ElMessage.success("验证通过");
@@ -50,8 +72,10 @@ const verifyPassword = () => {
       ElMessage.error("验证失败");
     }
   } catch {
-    verifyResult.value = "invalid";
     ElMessage.error("验证出错");
+    verifyResult.value = "";
+  } finally {
+    verifyLoading.value = false;
   }
 };
 
@@ -96,16 +120,21 @@ const copyHash = async () => {
               <el-input-number
                 v-model="saltRounds"
                 :min="4"
-                :max="31"
+                :max="20"
                 label="盐轮数"
                 style="width: 100%"
               />
             </el-col>
             <el-col :span="16">
-              <el-button type="primary" size="large" @click="hashPassword">
+              <el-button
+                type="primary"
+                size="large"
+                :loading="hashLoading"
+                @click="hashPassword"
+              >
                 生成哈希
               </el-button>
-              <el-button size="large" @click="clearHash">
+              <el-button size="large" @click="clearHash" :disabled="hashLoading">
                 清空
               </el-button>
             </el-col>
@@ -157,10 +186,15 @@ const copyHash = async () => {
 
           <el-row :gutter="20">
             <el-col>
-              <el-button type="primary" size="large" @click="verifyPassword">
+              <el-button
+                type="primary"
+                size="large"
+                :loading="verifyLoading"
+                @click="verifyPassword"
+              >
                 验证
               </el-button>
-              <el-button size="large" @click="clearVerify">
+              <el-button size="large" @click="clearVerify" :disabled="verifyLoading">
                 清空
               </el-button>
             </el-col>
