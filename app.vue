@@ -56,6 +56,7 @@ const navItems = [
 <style>
 html,
 body {
+  overflow: hidden;
   margin: 0;
   padding: 0;
 }
@@ -63,11 +64,12 @@ body {
 
 <style scoped>
 #app {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
   background: var(--el-bg-color);
 }
 
@@ -75,19 +77,18 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 12px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--el-border-color-lighter);
-  height: 56px;
+  height: 60px;
   flex-shrink: 0;
   background: var(--el-bg-color);
 }
 
 .app-main {
-  padding: 12px;
-  padding-bottom: 40px;
+  padding: 16px;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: calc(100vh - 56px);
+  height: calc(100vh - 60px);
 }
 
 .app-main::-webkit-scrollbar {
@@ -113,7 +114,6 @@ body {
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.2px;
-  font-size: 16px;
 }
 
 .app-nav {
@@ -127,7 +127,6 @@ body {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding-bottom: 32px;
 }
 
 .github-link {
@@ -152,22 +151,5 @@ body {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-}
-
-@media (min-width: 768px) {
-  .app-header {
-    padding: 0 16px;
-    height: 60px;
-  }
-
-  .app-main {
-    padding: 16px;
-    padding-bottom: 48px;
-    height: calc(100vh - 60px);
-  }
-
-  .app-brand {
-    font-size: inherit;
-  }
 }
 </style>
