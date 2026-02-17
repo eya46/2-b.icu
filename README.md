@@ -10,6 +10,7 @@
 - **URL 编解码** - URL 编码与解码
 - **QRCode 生成** - 二维码生成工具
 - **JWT 解析** - 解析 JWT Token 内容（Header、Payload、Signature）
+- **Bcrypt 哈希** - 生成与验证 bcrypt 哈希
 - **邮件解析** - 解析 EML 邮件文件内容
 - **字数统计** - 统计文本字符、单词、行数等
 - **颜色工具** - 取色器与颜色格式转换（HEX、RGB、HSL）
