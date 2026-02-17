@@ -54,7 +54,6 @@ const navItems = [
 <style>
 html,
 body {
-  overflow: hidden;
   margin: 0;
   padding: 0;
 }
@@ -62,12 +61,11 @@ body {
 
 <style scoped>
 #app {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .app-shell {
-  height: 100vh;
+  min-height: 100vh;
   background: var(--el-bg-color);
 }
 
@@ -80,13 +78,17 @@ body {
   height: 60px;
   flex-shrink: 0;
   background: var(--el-bg-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .app-main {
   padding: 16px;
+  padding-bottom: 48px; /* Extra padding at bottom to ensure content is visible */
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
 }
 
 .app-main::-webkit-scrollbar {
@@ -125,6 +127,7 @@ body {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
+  padding-bottom: 32px; /* Extra bottom padding for content */
 }
 
 .github-link {
