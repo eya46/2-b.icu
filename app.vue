@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-const menuRef = ref();
 
 const navItems = [
   { path: "/", label: "首页" },
@@ -16,18 +15,6 @@ const navItems = [
   { path: "/color", label: "颜色工具" },
   { path: "/diff", label: "Diff" },
 ] as const;
-
-// Watch route changes and close menu
-watch(
-  () => route.path,
-  () => {
-    if (menuRef.value) {
-      // Close any open submenus or collapse the menu
-      // For el-menu in horizontal mode, we can force a re-render or use internal methods
-      // Alternatively, set activeIndex to current path to reset state
-    }
-  }
-);
 </script>
 
 <template>
@@ -38,7 +25,7 @@ watch(
       </NuxtLink>
 
       <el-menu
-        ref="menuRef"
+        :key="route.path"
         class="app-nav"
         mode="horizontal"
         :default-active="route.path"
