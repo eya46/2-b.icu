@@ -18,8 +18,8 @@ const navItems = [
 </script>
 
 <template>
-  <el-container id="app" class="app-shell">
-    <el-header class="app-header">
+  <div id="app" class="app-shell">
+    <header class="app-header">
       <NuxtLink to="/" class="app-brand">
         2-b.icu
       </NuxtLink>
@@ -40,15 +40,15 @@ const navItems = [
         <GitHubIcon />
         <span>2-b.icu</span>
       </a>
-    </el-header>
+    </header>
 
-    <el-main class="app-main">
+    <main class="app-main">
       <div class="app-content">
         <NuxtRouteAnnouncer />
         <NuxtPage />
       </div>
-    </el-main>
-  </el-container>
+    </main>
+  </div>
 </template>
 
 <style>
@@ -56,16 +56,22 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 </style>
 
 <style scoped>
 #app {
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--el-bg-color);
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--el-bg-color);
 }
 
@@ -85,10 +91,10 @@ body {
 
 .app-main {
   padding: 16px;
-  padding-bottom: 48px; /* Extra padding at bottom to ensure content is visible */
+  padding-bottom: 48px;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: calc(100vh - 60px);
+  flex: 1;
 }
 
 .app-main::-webkit-scrollbar {
@@ -127,7 +133,6 @@ body {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding-bottom: 32px; /* Extra bottom padding for content */
 }
 
 .github-link {
