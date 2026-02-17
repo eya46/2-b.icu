@@ -25,7 +25,7 @@ onBeforeMount(() => {
 const uuidsStr = computed(() => uuids.value.join("\n") + "\n");
 
 const copyResult = async () => {
-  if (!uuidsStr.value) {
+  if (uuids.value.length === 0) {
     ElMessage.warning("没有可复制的内容");
     return;
   }

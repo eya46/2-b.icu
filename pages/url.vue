@@ -1,19 +1,117 @@
 <script setup lang="ts">
-const rawUrl = ref("");
-const encodedUrl = ref("");
+const rawData = ref("");
+const encodedData = ref("");
 
-const encode = () => {
+const encodeUrl = () => {
   try {
-    encodedUrl.value = encodeURIComponent(rawUrl.value);
+    const input = rawData.value;
+
+    // Check if input looks like a URL (starts with http:// or https://)
+    const urlMatch = input.match(/^(https?:\/\/[^/]+)(\/.*)?$/);
+
+    if (urlMatch) {
+      // It's a URL, only encode the path part
+      const baseUrl = urlMatch[1]; // protocol + domain
+      const pathPart = urlMatch[2] || ""; // everything after domain
+
+      if (pathPart) {
+        // Split by / and encode each segment
+        const segments = pathPart.split("/");
+        const encodedPath = segments.map((segment, idx) => {
+          if (idx === 0) return ""; // First element is empty before leading /
+
+          // Handle query string
+          if (segment.includes("?")) {
+            const [path, query] = segment.split("?");
+            const encodedPathSeg = encodeURIComponent(path);
+            const encodedQuery = query.split("&").map((param) => {
+              const eqIdx = param.indexOf("=");
+              if (eqIdx === -1) {
+                return encodeURIComponent(param);
+              }
+              const key = param.substring(0, eqIdx);
+              const value = param.substring(eqIdx + 1);
+              return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+            }).join("&");
+            return `${encodedPathSeg}?${encodedQuery}`;
+          }
+
+          // Handle fragment
+          if (segment.includes("#")) {
+            const [path, hash] = segment.split("#");
+            return `${encodeURIComponent(path)}#${encodeURIComponent(hash)}`;
+          }
+
+          return encodeURIComponent(segment);
+        }).join("/");
+
+        encodedData.value = baseUrl + encodedPath;
+      } else {
+        encodedData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, encode everything
+      encodedData.value = encodeURIComponent(input);
+    }
+
     ElMessage.success("编码成功");
   } catch {
     ElMessage.error("编码失败");
   }
 };
 
-const decode = () => {
+const decodeUrl = () => {
   try {
-    rawUrl.value = decodeURIComponent(encodedUrl.value);
+    const input = encodedData.value;
+
+    // Check if input looks like a URL (starts with http:// or https://)
+    const urlMatch = input.match(/^(https?:\/\/[^/]+)(\/.*)?$/);
+
+    if (urlMatch) {
+      // It's a URL, only decode the path part
+      const baseUrl = urlMatch[1]; // protocol + domain
+      const pathPart = urlMatch[2] || ""; // everything after domain
+
+      if (pathPart) {
+        // Split by / and decode each segment
+        const segments = pathPart.split("/");
+        const decodedPath = segments.map((segment, idx) => {
+          if (idx === 0) return ""; // First element is empty before leading /
+
+          // Handle query string
+          if (segment.includes("?")) {
+            const [path, query] = segment.split("?");
+            const decodedPathSeg = decodeURIComponent(path);
+            const decodedQuery = query.split("&").map((param) => {
+              const eqIdx = param.indexOf("=");
+              if (eqIdx === -1) {
+                return decodeURIComponent(param);
+              }
+              const key = param.substring(0, eqIdx);
+              const value = param.substring(eqIdx + 1);
+              return `${decodeURIComponent(key)}=${decodeURIComponent(value)}`;
+            }).join("&");
+            return `${decodedPathSeg}?${decodedQuery}`;
+          }
+
+          // Handle fragment
+          if (segment.includes("#")) {
+            const [path, hash] = segment.split("#");
+            return `${decodeURIComponent(path)}#${decodeURIComponent(hash)}`;
+          }
+
+          return decodeURIComponent(segment);
+        }).join("/");
+
+        rawData.value = baseUrl + decodedPath;
+      } else {
+        rawData.value = baseUrl;
+      }
+    } else {
+      // Not a URL, decode everything
+      rawData.value = decodeURIComponent(input);
+    }
+
     ElMessage.success("解码成功");
   } catch {
     ElMessage.error("解码失败");
@@ -21,12 +119,12 @@ const decode = () => {
 };
 
 const copyRaw = async () => {
-  if (!rawUrl.value) {
+  if (!rawData.value) {
     ElMessage.warning("没有可复制的内容");
     return;
   }
   try {
-    await navigator.clipboard.writeText(rawUrl.value);
+    await navigator.clipboard.writeText(rawData.value);
     ElMessage.success("已复制到剪贴板");
   } catch {
     ElMessage.error("复制失败");
@@ -34,12 +132,12 @@ const copyRaw = async () => {
 };
 
 const copyEncoded = async () => {
-  if (!encodedUrl.value) {
+  if (!encodedData.value) {
     ElMessage.warning("没有可复制的内容");
     return;
   }
   try {
-    await navigator.clipboard.writeText(encodedUrl.value);
+    await navigator.clipboard.writeText(encodedData.value);
     ElMessage.success("已复制到剪贴板");
   } catch {
     ElMessage.error("复制失败");
@@ -47,8 +145,8 @@ const copyEncoded = async () => {
 };
 
 const clearAll = () => {
-  rawUrl.value = "";
-  encodedUrl.value = "";
+  rawData.value = "";
+  encodedData.value = "";
 };
 </script>
 
@@ -57,10 +155,10 @@ const clearAll = () => {
     <el-space direction="vertical" :size="16" style="width: 100%">
       <el-row :gutter="12">
         <el-col>
-          <el-button type="primary" size="large" @click="encode">
+          <el-button type="primary" size="large" @click="encodeUrl">
             编码
           </el-button>
-          <el-button type="primary" size="large" @click="decode">
+          <el-button type="primary" size="large" @click="decodeUrl">
             解码
           </el-button>
           <el-button size="large" @click="clearAll">
@@ -70,11 +168,11 @@ const clearAll = () => {
       </el-row>
 
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :md="12">
           <el-card shadow="never">
             <template #header>
               <div class="card-header">
-                <span>原始 URL</span>
+                <span>原始数据</span>
                 <el-button type="primary" size="small" @click="copyRaw">
                   复制
                 </el-button>
@@ -82,18 +180,18 @@ const clearAll = () => {
             </template>
             <el-input
               :rows="6"
-              v-model="rawUrl"
+              v-model="rawData"
               type="textarea"
-              placeholder="原始 URL"
+              placeholder="原始数据"
             />
           </el-card>
         </el-col>
 
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :md="12">
           <el-card shadow="never">
             <template #header>
               <div class="card-header">
-                <span>编码后 URL</span>
+                <span>URL编码</span>
                 <el-button type="primary" size="small" @click="copyEncoded">
                   复制
                 </el-button>
@@ -101,9 +199,9 @@ const clearAll = () => {
             </template>
             <el-input
               :rows="6"
-              v-model="encodedUrl"
+              v-model="encodedData"
               type="textarea"
-              placeholder="编码后 URL"
+              placeholder="URL编码"
             />
           </el-card>
         </el-col>

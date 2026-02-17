@@ -70,7 +70,7 @@ const clearAll = () => {
       </el-row>
 
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :md="12">
           <el-card shadow="never">
             <template #header>
               <div class="card-header">
@@ -89,7 +89,7 @@ const clearAll = () => {
           </el-card>
         </el-col>
 
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :md="12">
           <el-card shadow="never">
             <template #header>
               <div class="card-header">
