@@ -40,9 +40,9 @@ const copyResult = async () => {
 
 <template>
   <div class="uuid-container">
-    <el-space direction="vertical" :size="16" style="width: 100%">
-      <el-row :gutter="12" align="middle">
-        <el-col :span="6">
+    <div class="content-wrapper">
+      <el-row :gutter="16" align="middle">
+        <el-col :xs="24" :md="6">
           <el-input-number
             v-model="num"
             :min="1"
@@ -52,7 +52,7 @@ const copyResult = async () => {
             @change="refreshByNum"
           />
         </el-col>
-        <el-col :span="18">
+        <el-col :xs="24" :md="18">
           <el-button type="primary" size="large" @click="refresh">
             刷新
           </el-button>
@@ -62,25 +62,20 @@ const copyResult = async () => {
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
+      <el-row :gutter="16">
         <el-col>
-          <el-card shadow="never">
+          <el-card shadow="never" class="result-card">
             <template #header>
               <div class="card-header">
-                <span>UUID 列表</span>
+                <span class="card-title">UUID 列表</span>
+                <span class="card-count">{{ uuids.length }} 个</span>
               </div>
             </template>
-            <el-input
-              readonly
-              resize="none"
-              :rows="num + 1"
-              :model-value="uuidsStr"
-              type="textarea"
-            />
+            <div class="result-display">{{ uuidsStr }}</div>
           </el-card>
         </el-col>
       </el-row>
-    </el-space>
+    </div>
   </div>
 </template>
 
@@ -90,9 +85,52 @@ const copyResult = async () => {
   flex-direction: column;
 }
 
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.result-card {
+  margin-top: 8px;
+}
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.card-count {
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.result-display {
+  padding: 14px;
+  background: var(--el-fill-color-light);
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.result-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+.result-display::-webkit-scrollbar-thumb {
+  background: var(--el-border-color);
+  border-radius: 3px;
 }
 </style>

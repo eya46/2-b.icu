@@ -152,14 +152,14 @@ const clearAll = () => {
 
 <template>
   <div class="url-container">
-    <el-space direction="vertical" :size="16" style="width: 100%">
-      <el-row :gutter="12">
+    <div class="content-wrapper">
+      <el-row :gutter="16">
         <el-col>
           <el-button type="primary" size="large" @click="encodeUrl">
-            编码
+            编码 → URL
           </el-button>
           <el-button type="primary" size="large" @click="decodeUrl">
-            解码
+            解码 → 原始
           </el-button>
           <el-button size="large" @click="clearAll">
             清空
@@ -167,46 +167,48 @@ const clearAll = () => {
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
+      <el-row :gutter="16">
         <el-col :xs="24" :md="12">
-          <el-card shadow="never">
+          <el-card shadow="never" class="input-card">
             <template #header>
               <div class="card-header">
-                <span>原始数据</span>
-                <el-button type="primary" size="small" @click="copyRaw">
+                <span class="card-title">原始数据</span>
+                <el-button type="primary" size="small" link @click="copyRaw">
                   复制
                 </el-button>
               </div>
             </template>
             <el-input
-              :rows="6"
+              :rows="10"
               v-model="rawData"
               type="textarea"
-              placeholder="原始数据"
+              placeholder="输入原始文本或 URL..."
+              class="code-textarea"
             />
           </el-card>
         </el-col>
 
         <el-col :xs="24" :md="12">
-          <el-card shadow="never">
+          <el-card shadow="never" class="input-card">
             <template #header>
               <div class="card-header">
-                <span>URL编码</span>
-                <el-button type="primary" size="small" @click="copyEncoded">
+                <span class="card-title">URL 编码</span>
+                <el-button type="primary" size="small" link @click="copyEncoded">
                   复制
                 </el-button>
               </div>
             </template>
             <el-input
-              :rows="6"
+              :rows="10"
               v-model="encodedData"
               type="textarea"
-              placeholder="URL编码"
+              placeholder="输入 URL 编码字符串..."
+              class="code-textarea"
             />
           </el-card>
         </el-col>
       </el-row>
-    </el-space>
+    </div>
   </div>
 </template>
 
@@ -216,9 +218,32 @@ const clearAll = () => {
   flex-direction: column;
 }
 
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.input-card {
+  margin-top: 8px;
+}
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.code-textarea :deep(.el-textarea__inner) {
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  border-radius: 6px;
 }
 </style>

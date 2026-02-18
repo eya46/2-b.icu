@@ -54,14 +54,14 @@ const clearAll = () => {
 
 <template>
   <div class="base64-container">
-    <el-space direction="vertical" :size="16" style="width: 100%">
-      <el-row :gutter="12">
+    <div class="content-wrapper">
+      <el-row :gutter="16">
         <el-col>
           <el-button type="primary" size="large" @click="toBase64">
-            编码
+            编码 → Base64
           </el-button>
           <el-button type="primary" size="large" @click="toRaw">
-            解码
+            解码 → 原始
           </el-button>
           <el-button size="large" @click="clearAll">
             清空
@@ -69,46 +69,48 @@ const clearAll = () => {
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
+      <el-row :gutter="16">
         <el-col :xs="24" :md="12">
-          <el-card shadow="never">
+          <el-card shadow="never" class="input-card">
             <template #header>
               <div class="card-header">
-                <span>原始数据</span>
-                <el-button type="primary" size="small" @click="copyRaw">
+                <span class="card-title">原始数据</span>
+                <el-button type="primary" size="small" link @click="copyRaw">
                   复制
                 </el-button>
               </div>
             </template>
             <el-input
-              :rows="6"
+              :rows="10"
               v-model="rawData"
               type="textarea"
-              placeholder="原始数据"
+              placeholder="输入原始文本..."
+              class="code-textarea"
             />
           </el-card>
         </el-col>
 
         <el-col :xs="24" :md="12">
-          <el-card shadow="never">
+          <el-card shadow="never" class="input-card">
             <template #header>
               <div class="card-header">
-                <span>Base64</span>
-                <el-button type="primary" size="small" @click="copyBase64">
+                <span class="card-title">Base64</span>
+                <el-button type="primary" size="small" link @click="copyBase64">
                   复制
                 </el-button>
               </div>
             </template>
             <el-input
-              :rows="6"
+              :rows="10"
               v-model="base64Data"
               type="textarea"
-              placeholder="base64"
+              placeholder="输入 Base64 字符串..."
+              class="code-textarea"
             />
           </el-card>
         </el-col>
       </el-row>
-    </el-space>
+    </div>
   </div>
 </template>
 
@@ -118,9 +120,32 @@ const clearAll = () => {
   flex-direction: column;
 }
 
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.input-card {
+  margin-top: 8px;
+}
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.code-textarea :deep(.el-textarea__inner) {
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  border-radius: 6px;
 }
 </style>
