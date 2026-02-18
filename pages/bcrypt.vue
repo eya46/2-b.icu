@@ -244,9 +244,6 @@ const copyHash = async () => {
 </template>
 
 <style scoped>
-.container-bottom-pad {
-  padding-bottom: 32px;
-}
 .bcrypt-container {
   display: flex;
   flex-direction: column;

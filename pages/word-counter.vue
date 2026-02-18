@@ -155,7 +155,7 @@ watch(text, () => {
             <div class="stat-value">{{ countResult.numbers }}</div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="12" :sm="6">
           <div class="stat-item">
             <div class="stat-label">标点符号</div>
             <div class="stat-value">{{ countResult.punctuation }}</div>

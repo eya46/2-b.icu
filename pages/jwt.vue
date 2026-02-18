@@ -485,9 +485,6 @@ const clearGenerate = () => {
 </template>
 
 <style scoped>
-.container-bottom-pad {
-  padding-bottom: 32px;
-}
 .jwt-container {
   display: flex;
   flex-direction: column;
