@@ -89,105 +89,146 @@ watch(text, () => {
 
 <template>
   <div class="counter-container">
-    <el-input
-      v-model="text"
-      type="textarea"
-      :rows="10"
-      placeholder="请输入或粘贴文本..."
-      class="text-input"
-    />
+    <div class="content-wrapper">
+      <el-card shadow="never" class="input-card">
+        <template #header>
+          <div class="card-header">
+            <span class="card-title">输入文本</span>
+            <span class="card-count" v-if="text.length > 0">{{ text.length }} 字符</span>
+          </div>
+        </template>
+        <el-input
+          v-model="text"
+          type="textarea"
+          :rows="10"
+          placeholder="请输入或粘贴文本..."
+          class="text-input"
+        />
+      </el-card>
 
-    <el-divider />
-
-    <el-row :gutter="16">
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">总字符数</div>
-          <div class="stat-value">{{ countResult.chars }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">不含空格</div>
-          <div class="stat-value">{{ countResult.charsNoSpace }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">单词数</div>
-          <div class="stat-value">{{ countResult.words }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">行数</div>
-          <div class="stat-value">{{ countResult.lines }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">段落数</div>
-          <div class="stat-value">{{ countResult.paragraphs }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">中文字符</div>
-          <div class="stat-value">{{ countResult.cjkChars }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">英文字符</div>
-          <div class="stat-value">{{ countResult.englishChars }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">数字个数</div>
-          <div class="stat-value">{{ countResult.numbers }}</div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="8">
-        <div class="stat-item">
-          <div class="stat-label">标点符号</div>
-          <div class="stat-value">{{ countResult.punctuation }}</div>
-        </div>
-      </el-col>
-    </el-row>
+      <el-row :gutter="12">
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">总字符数</div>
+            <div class="stat-value">{{ countResult.chars }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">不含空格</div>
+            <div class="stat-value">{{ countResult.charsNoSpace }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">单词数</div>
+            <div class="stat-value">{{ countResult.words }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">行数</div>
+            <div class="stat-value">{{ countResult.lines }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">段落数</div>
+            <div class="stat-value">{{ countResult.paragraphs }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">中文字符</div>
+            <div class="stat-value">{{ countResult.cjkChars }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">英文字符</div>
+            <div class="stat-value">{{ countResult.englishChars }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="12" :sm="6">
+          <div class="stat-item">
+            <div class="stat-label">数字个数</div>
+            <div class="stat-value">{{ countResult.numbers }}</div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12">
+          <div class="stat-item">
+            <div class="stat-label">标点符号</div>
+            <div class="stat-value">{{ countResult.punctuation }}</div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .counter-container {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-.text-input {
-  font-size: 16px;
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.input-card {
+  margin-top: 8px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.card-count {
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.text-input :deep(.el-textarea__inner) {
+  font-size: 15px;
+  line-height: 1.8;
+  border-radius: 6px;
 }
 
 .stat-item {
-  padding: 16px;
+  padding: 18px 16px;
   background-color: var(--el-fill-color-light);
-  border-radius: 0;
+  border-radius: 8px;
   text-align: center;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
+  margin-top: 12px;
 }
 
 .stat-item:hover {
   background-color: var(--el-fill-color);
+  transform: translateY(-2px);
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--el-text-color-secondary);
   margin-bottom: 8px;
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--el-color-primary);
+  line-height: 1.2;
 }
 </style>
