@@ -26,6 +26,7 @@ const items = [
   { path: "/url", title: "URL编解码", desc: "URL 编码 / 解码" },
   { path: "/qrcode", title: "QRCode", desc: "生成二维码并自定义参数" },
   { path: "/jwt", title: "JWT", desc: "解析 / 生成 JWT Token" },
+  { path: "/github-gpg", title: "GitHub GPG", desc: "按 GitHub 用户名选择公钥并生成 PGP 密文" },
   { path: "/bcrypt", title: "Bcrypt", desc: "生成与验证 bcrypt 哈希" },
   { path: "/mail-parser", title: "邮件解析", desc: "解析 .eml/MIME 邮件内容" },
   { path: "/word-counter", title: "字数统计", desc: "统计文本字符、单词、行数等" },
